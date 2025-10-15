@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Auth Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .auth-container {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      z-index: 10;
+      position: relative;
+    }
+
+    .toggle-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .toggle-buttons button {
+      width: 48%;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 42px;
+      cursor: pointer;
+      color: #a0aec0;
+    }
+
+    .password-toggle:hover {
+      color: #667eea;
+    }
+
+    .error-message {
+      color: #e53e3e;
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .circles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .circles li {
+      position: absolute;
+      display: block;
+      list-style: none;
+      width: 20px;
+      height: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      animation: animate 25s linear infinite;
+      bottom: -150px;
+      border-radius: 50%;
+    }
+
+    @keyframes animate {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+      100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+    }
+  </style>
+</head>
+<body>
+  <ul class="circles">
+    <li></li><li></li><li></li><li></li><li></li>
+    <li></li><li></li><li></li><li></li><li></li>
+  </ul>
+
+  <div class="auth-container">
+    <div class="toggle-buttons">
+      <button id="showLogin" class="btn bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold">Login</button>
+      <button id="showRegister" class="btn bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm">
+      <div class="form-group mb-4 relative">
+        <label for="email" class="block text-gray-700 font-medium mb-1">Email Address</label>
+        <input type="email" id="email" class="form-control w-full p-3 border rounded-lg" placeholder="Enter your email" required>
+        <div class="error-message" id="email-error">Please enter a valid email address</div>
+      </div>
+
+      <div class="form-group mb-4 relative">
+        <label for="password" class="block text-gray-700 font-medium mb-1">Password</label>
+        <input type="password" id="password" class="form-control w-full p-3 border rounded-lg" placeholder="Enter your password" required>
+        <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+        <div class="error-message" id="password-error">Password must be at least 6 characters</div>
+      </div>
+
+      <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">Sign In</button>
+    </form>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" style="display:none;">
+      <div class="form-group mb-4">
+        <label for="regEmail" class="block text-gray-700 font-medium mb-1">Email Address</label>
+        <input type="email" id="regEmail" class="form-control w-full p-3 border rounded-lg" placeholder="Enter your email" required>
+      </div>
+
+      <div class="form-group mb-4 relative">
+        <label for="regPassword" class="block text-gray-700 font-medium mb-1">Password</label>
+        <input type="password" id="regPassword" class="form-control w-full p-3 border rounded-lg" placeholder="Create a password" required>
+        <div class="error-message" id="reg-password-error">Password must be at least 6 characters</div>
+      </div>
+
+      <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-2 rounded-lg font-semibold hover:opacity-90 transition">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const showLoginBtn = document.getElementById('showLogin');
+      const showRegisterBtn = document.getElementById('showRegister');
+
+      // Toggle Login/Register
+      showLoginBtn.addEventListener('click', () => {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        showLoginBtn.classList.add('bg-gradient-to-r','from-indigo-500','to-purple-500','text-white');
+        showRegisterBtn.classList.remove('bg-gradient-to-r','from-indigo-500','to-purple-500','text-white');
+        showRegisterBtn.classList.add('bg-gray-200','text-gray-700');
+      });
+
+      showRegisterBtn.addEventListener('click', () => {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        showRegisterBtn.classList.add('bg-gradient-to-r','from-indigo-500','to-purple-500','text-white');
+        showLoginBtn.classList.remove('bg-gradient-to-r','from-indigo-500','to-purple-500','text-white');
+        showLoginBtn.classList.add('bg-gray-200','text-gray-700');
+      });
+
+      // Login submit
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const res = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          alert(data.message);
+        } catch (err) {
+          alert('Server error. Please try again later.');
+        }
+      });
+
+      // Register submit
+      registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('regEmail').value;
+        const password = document.getElementById('regPassword').value;
+
+        if (password.length < 6) {
+          document.getElementById('reg-password-error').style.display = 'block';
+          return;
+        } else {
+          document.getElementById('reg-password-error').style.display = 'none';
+        }
+
+        try {
+          const res = await fetch('/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+          alert(data.message);
+          if (data.message.includes('success')) {
+            // Switch back to login form after successful registration
+            showLoginBtn.click();
+          }
+        } catch (err) {
+          alert('Server error. Please try again later.');
+        }
+      });
+
+      // Password toggle (login)
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+      });
+
+      // Background circles animation
+      const circles = document.querySelectorAll('.circles li');
+      circles.forEach(circle => {
+        circle.style.animationDuration = `${15 + Math.random() * 20}s`;
+        circle.style.animationDelay = `${Math.random() * 5}s`;
+        circle.style.left = `${Math.random() * 100}%`;
+        const size = 20 + Math.random() * 100;
+        circle.style.width = `${size}px`;
+        circle.style.height = `${size}px`;
+        circle.style.background = `rgba(255, 255, 255, ${0.1 + Math.random() * 0.2})`;
+      });
+    });
+  </script>
+</body>
+</html>
